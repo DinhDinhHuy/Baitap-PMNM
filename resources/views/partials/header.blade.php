@@ -10,24 +10,14 @@
                     <div style="font-size: 14px; opacity: 0.9;">Hanoi University of Civil Engineering</div>
                 </div>
             </div>
-            <div class="header-tools" style="display: flex; gap: 25px; font-size: 12px;">
-                <div style="text-align: center; cursor: pointer;">
-                    <i class="fas fa-search" style="font-size: 18px; margin-bottom: 6px; display: block;"></i>
-                    <span>Tìm kiếm</span>
-                </div>
-                <div style="text-align: center; cursor: pointer;">
-                    <i class="fas fa-globe" style="font-size: 18px; margin-bottom: 6px; display: block;"></i>
-                    <span>English</span>
-                </div>
-                <div style="text-align: center; cursor: pointer;">
-                    <i class="fas fa-bars" style="font-size: 18px; margin-bottom: 6px; display: block;"></i>
-                    <span>Các ứng dụng</span>
-                </div>
-                <div style="text-align: center; cursor: pointer;">
-                    <i class="fas fa-user" style="font-size: 18px; margin-bottom: 6px; display: block;"></i>
-                    <span>Đăng nhập</span>
-                </div>
-            </div>
+            @if ($menus->isNotEmpty())
+                <nav aria-label="Menu chính" style="display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 20px;">
+                    @foreach ($menus as $menu)
+                        <a href="{{ $menu->url }}" @if ($menu->dangChon()) aria-current="page" @endif
+                           style="color: #fff; text-decoration: none;">{{ $menu->ten }}</a>
+                    @endforeach
+                </nav>
+            @endif
         </div>
     </div>
     
