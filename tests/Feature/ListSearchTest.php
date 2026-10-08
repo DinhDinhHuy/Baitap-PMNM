@@ -6,11 +6,26 @@ use App\Models\LopHoc;
 use App\Models\SinhVien;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class ListSearchTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Carbon::setTestNow(now()->setTime(10, 0));
+    }
+
+    protected function tearDown(): void
+    {
+        Carbon::setTestNow();
+
+        parent::tearDown();
+    }
 
     public function test_class_list_can_be_searched_by_class_name_code_or_teacher(): void
     {
@@ -35,6 +50,15 @@ class ListSearchTest extends TestCase
             ->assertDontSee('Thiết kế đồ họa')
             ->assertSee('Tìm thấy')
             ->assertSee('value="An"', false);
+    }
+
+    public function test_class_routes_are_blocked_outside_working_hours(): void
+    {
+        Carbon::setTestNow(now()->setTime(17, 31));
+
+        $this->get(route('lophoc.index'))
+            ->assertForbidden()
+            ->assertExactJson(['message' => 'Outside working hours']);
     }
 
     public function test_class_list_can_filter_by_class_size_and_select_rows_per_page(): void
@@ -152,5 +176,23 @@ class ListSearchTest extends TestCase
             ->assertDontSee('Nguyễn Minh Anh')
             ->assertSee('Tìm thấy')
             ->assertSee('value="Thiết kế"', false);
+    }
+
+    public function test_student_detail_page_can_be_opened(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $student = SinhVien::create([
+            'ho_ten' => 'Lê Văn Dũng',
+            'email' => 'dung@example.com',
+            'nganh' => 'Kỹ thuật phần mềm',
+            'phone_number' => '0909090909',
+        ]);
+
+        $this->get(route('sinhvien.show', $student))
+            ->assertOk()
+            ->assertSee('CHI TIẾT SINH VIÊN')
+            ->assertSee('Lê Văn Dũng')
+            ->assertSee('dung@example.com');
     }
 }

@@ -187,7 +187,7 @@
                                 <td>{{ $sv->nganh }}</td>
                                 <td>{{ $sv->phone_number }}</td>
                                 <td class="student-actions">
-                                    <a href="/sinhvien/show/{{ $sv->id }}" class="student-detail-button">Chi tiết</a>
+                                    <a href="{{ route('sinhvien.show', ['id' => $sv->id]) }}" class="student-detail-button">Chi tiết</a>
                                 </td>
                             </tr>
                         @empty

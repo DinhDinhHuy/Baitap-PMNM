@@ -40,8 +40,10 @@ class SinhVienController extends Controller
 
 
 
-    public function show($id="") {
-        return "Đây là sinh viên có ID là " . $id;
+    public function show($id = "") {
+        $sinhvien = \App\Models\SinhVien::findOrFail($id);
+
+        return view('sinhvien.show', compact('sinhvien'));
     }
 
     public function showInfo($hoten= "Chưa có tên", $tuoi=0) {
