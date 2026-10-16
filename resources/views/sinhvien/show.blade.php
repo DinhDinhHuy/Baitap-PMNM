@@ -14,9 +14,11 @@
             <p><strong>Email:</strong> {{ $sinhvien->email }}</p>
             <p><strong>Ngành học:</strong> {{ $sinhvien->nganh }}</p>
             <p><strong>Số điện thoại:</strong> {{ $sinhvien->phone_number }}</p>
+            <p><strong>Lớp học:</strong> {{ $sinhvien->lopHoc?->ten_lop ?? 'Chưa xếp lớp' }}</p>
 
             <div style="margin-top: 20px;">
                 <a href="{{ route('sinhvien.index') }}" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">Quay lại danh sách</a>
+                <a href="{{ route('sinhvien.edit', $sinhvien) }}" style="padding: 10px 20px; background-color: #0875e1; color: white; text-decoration: none; border-radius: 5px;">Chỉnh sửa</a>
             </div>
         </div>
     </div>

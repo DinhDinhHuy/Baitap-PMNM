@@ -221,8 +221,140 @@
             color: #012b5d;
             font-size: 24px;
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+        }
+
+        .table-card {
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
             margin-bottom: 20px;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        table.student-table,
+        table.app-table {
+            width: 100%;
+            min-width: 650px;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
+        }
+
+        table.student-table th,
+        table.app-table th {
+            padding: 14px 16px;
+            background: #f8fafc;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        table.student-table th a,
+        table.app-table th a {
+            color: #334155;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        table.student-table th a:hover,
+        table.app-table th a:hover {
+            color: #0875e1;
+        }
+
+        table.student-table td,
+        table.app-table td {
+            padding: 13px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        table.student-table tbody tr:hover,
+        table.app-table tbody tr:hover {
+            background-color: #f8fbff;
+        }
+
+        table.student-table tbody tr:last-child td,
+        table.app-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .badge-role-admin {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .badge-role-lecturer {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .btn-action-edit {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid #cbd5e1;
+            transition: all 0.15s;
+        }
+
+        .btn-action-edit:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .btn-action-delete {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #fecaca;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-action-delete:hover {
+            background: #fee2e2;
+            color: #b91c1c;
         }
 
         /* Pagination Styles */
@@ -366,6 +498,14 @@
 
         <!-- Content -->
         <main class="content-area">
+            @if ($errors->any())
+                <div role="alert" style="position:absolute;top:110px;right:24px;max-width:420px;padding:12px 18px;background:#fee2e2;color:#991b1b;border-radius:7px;z-index:2">
+                    <ul style="padding-left:18px">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+                </div>
+            @endif
+            @if (session('success'))
+                <div role="status" style="position:absolute;top:110px;right:24px;padding:12px 18px;background:#dcfce7;color:#166534;border-radius:7px;z-index:2">{{ session('success') }}</div>
+            @endif
             @yield('content')
         </main>
 

@@ -1,58 +1,59 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Hệ thống quản lý lớp học
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Ứng dụng Laravel quản lý lớp học, sinh viên, menu và tài khoản với giao diện Blade dùng chung `layouts.admin`. Danh sách lớp học, sinh viên, menu và tài khoản hỗ trợ phân trang; danh sách có lọc và sắp xếp theo các trường phù hợp.
 
-## About Laravel
+## Cài đặt và chạy
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Yêu cầu PHP 8.3 trở lên và cơ sở dữ liệu được cấu hình trong `.env`.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Seed tạo một tài khoản admin và một tài khoản giảng viên mẫu:
 
-## Contributing
+| Vai trò | Email | Mật khẩu |
+|---|---|---|
+| Admin | `admin@example.com` | `password123` |
+| Giảng viên | `giangvien@example.com` | `password123` |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Đây là thông tin phục vụ môi trường phát triển; hãy đổi mật khẩu ngay và không dùng các mật khẩu mặc định này ở môi trường production.
 
-## Code of Conduct
+## Phân quyền
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **Admin:** quản lý lớp học, sinh viên, menu và tài khoản; có thể tạo, sửa vai trò và xóa tài khoản.
+- **Giảng viên:** quản lý lớp học, sinh viên và thông tin tài khoản của chính mình.
+- Các route quản trị yêu cầu đăng nhập. Quyền được kiểm soát bằng middleware `auth` và `role`.
+- Giao diện quản lý lớp học giữ giới hạn giờ hành chính hiện có (08:30–17:30); API lớp học không áp dụng giới hạn giờ này.
 
-## Security Vulnerabilities
+## API
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+API lớp học và sinh viên dùng bearer token. Đăng nhập để lấy token:
 
-## License
+```http
+POST /api/login
+Content-Type: application/json
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+{"email":"giangvien@example.com","password":"password123"}
+```
+
+Gửi token trong header `Authorization: Bearer <token>`. Token hết hạn sau một năm; gọi `POST /api/logout` để thu hồi token hiện tại.
+
+| Phương thức | Endpoint | Chức năng |
+|---|---|---|
+| GET, POST | `/api/lophoc` | Liệt kê, tạo lớp học |
+| GET, PUT/PATCH, DELETE | `/api/lophoc/{lophoc}` | Xem, cập nhật, xóa lớp học |
+| GET, POST | `/api/sinhvien` | Liệt kê, tạo sinh viên |
+| GET, PUT/PATCH, DELETE | `/api/sinhvien/{sinhvien}` | Xem, cập nhật, xóa sinh viên |
+
+Các danh sách API hỗ trợ phân trang và tham số lọc/sắp xếp như `q`, `sort`, `direction`, `per_page`; lớp học hỗ trợ thêm `trang_thai`, sinh viên hỗ trợ `lop_hoc_id`.
+
+## Kiểm thử
+
+```bash
+php artisan test
+```

@@ -156,6 +156,29 @@
                     <a href="{{ route('sinhvien.index') }}" class="list-search-clear">Xóa lọc</a>
                 @endif
             </div>
+            <div class="list-search-options">
+                <div>
+                    <label for="student-major">Ngành học</label>
+                    <input id="student-major" name="nganh" value="{{ request('nganh') }}" placeholder="Lọc theo ngành">
+                </div>
+                <div>
+                    <label for="student-class">Lớp học</label>
+                    <select id="student-class" name="lop_hoc_id">
+                        <option value="">Tất cả lớp</option>
+                        @foreach ($lophocs as $lop)
+                            <option value="{{ $lop->id }}" @selected((string) request('lop_hoc_id') === (string) $lop->id)>{{ $lop->ten_lop }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label for="student-per-page">Số dòng mỗi trang</label>
+                    <select id="student-per-page" name="per_page">
+                        @foreach ([5, 10, 25, 50] as $option)
+                            <option value="{{ $option }}" @selected((int) request('per_page', 10) === $option)>{{ $option }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
             @error('q')
                 <p class="list-search-error">{{ $message }}</p>
             @enderror
@@ -170,11 +193,10 @@
                 <table class="student-table">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Họ và tên</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Ngành học</th>
-                            <th scope="col">Số điện thoại</th>
+                            @foreach (['id' => 'ID', 'ho_ten' => 'Họ và tên', 'email' => 'Email', 'nganh' => 'Ngành học', 'phone_number' => 'Số điện thoại'] as $column => $label)
+                                <th scope="col"><a href="{{ route('sinhvien.index', array_merge(request()->query(), ['sort' => $column, 'direction' => $sort === $column && $direction === 'asc' ? 'desc' : 'asc'])) }}">{{ $label }} @if ($sort === $column){{ $direction === 'asc' ? '↑' : '↓' }}@endif</a></th>
+                            @endforeach
+                            <th scope="col">Lớp</th>
                             <th scope="col" class="student-actions">Hành động</th>
                         </tr>
                     </thead>
@@ -186,13 +208,20 @@
                                 <td>{{ $sv->email }}</td>
                                 <td>{{ $sv->nganh }}</td>
                                 <td>{{ $sv->phone_number }}</td>
+                                <td>{{ $sv->lopHoc?->ten_lop ?? 'Chưa xếp lớp' }}</td>
                                 <td class="student-actions">
-                                    <a href="{{ route('sinhvien.show', ['id' => $sv->id]) }}" class="student-detail-button">Chi tiết</a>
+                                    <a href="{{ route('sinhvien.show', $sv) }}" class="student-detail-button">Chi tiết</a>
+                                    <a href="{{ route('sinhvien.edit', $sv) }}" class="student-detail-button">Sửa</a>
+                                    <form action="{{ route('sinhvien.destroy', $sv) }}" method="POST" style="display:inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sinh viên này?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="student-detail-button" style="border:0;background:#b91c1c;cursor:pointer">Xóa</button>
+                                    </form>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="empty-state">Không tìm thấy sinh viên phù hợp.</td>
+                                <td colspan="7" class="empty-state">Không tìm thấy sinh viên phù hợp.</td>
                             </tr>
                         @endforelse
                     </tbody>

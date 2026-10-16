@@ -10,12 +10,23 @@
                     <div style="font-size: 14px; opacity: 0.9;">Hanoi University of Civil Engineering</div>
                 </div>
             </div>
-            @if ($menus->isNotEmpty())
+            @if ($menus->isNotEmpty() || auth()->check())
                 <nav aria-label="Menu chính" style="display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 20px;">
                     @foreach ($menus as $menu)
-                        <a href="{{ $menu->url }}" @if ($menu->dangChon()) aria-current="page" @endif
-                           style="color: #fff; text-decoration: none;">{{ $menu->ten }}</a>
+                        @if ($menu->url !== '/' && $menu->ten !== 'Trang chủ')
+                            <a href="{{ $menu->url }}" @if ($menu->dangChon()) aria-current="page" @endif
+                               style="color: #fff; text-decoration: none;">{{ $menu->ten }}</a>
+                        @endif
                     @endforeach
+                    @auth
+                        <span>{{ auth()->user()->name }} ({{ auth()->user()->isAdmin() ? 'Admin' : 'Giảng viên' }})</span>
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit">Đăng xuất</button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" style="color:#fff">Đăng nhập</a>
+                    @endauth
                 </nav>
             @endif
         </div>

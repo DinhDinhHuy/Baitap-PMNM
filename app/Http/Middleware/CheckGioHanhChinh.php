@@ -16,8 +16,8 @@ class CheckGioHanhChinh
     public function handle(Request $request, Closure $next): Response
     {
         $gioHienTai = now();
-        $gioBatDau = $gioHienTai->copy()->setTime(8, 30, 0);
-        $gioKetThuc = $gioHienTai->copy()->setTime(17, 30, 0);
+        $gioBatDau = $gioHienTai->copy()->setTime(6, 0, 0);
+        $gioKetThuc = $gioHienTai->copy()->setTime(23, 59, 59);
 
         if ($gioHienTai->lt($gioBatDau) || $gioHienTai->gt($gioKetThuc)) {
             return response()->json(['message' => 'Outside working hours'], 403);

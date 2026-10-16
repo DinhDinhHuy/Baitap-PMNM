@@ -25,9 +25,9 @@ class AuthController extends Controller
         // Auth::attempt sẽ tự động so sánh email/password với database (Model User)
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             // Đăng nhập thành công thì chuyển hướng vào trang Sinh Viên
-            return redirect()->intended('/sinhvien');
+            return redirect()->intended(route('lophoc.index'));
         }
 
         // Đăng nhập thất bại thì quay lại báo lỗi
@@ -42,6 +42,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/login');
     }
 }

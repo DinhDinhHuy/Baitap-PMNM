@@ -396,13 +396,13 @@
                 <table class="class-table">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Tên lớp</th>
-                            <th scope="col">Mã lớp</th>
-                            <th scope="col">Giáo viên</th>
+                            @foreach (['id' => 'ID', 'ten_lop' => 'Tên lớp', 'ma_lop' => 'Mã lớp', 'giao_vien' => 'Giáo viên'] as $column => $label)
+                                <th scope="col"><a href="{{ route('lophoc.index', array_merge(request()->query(), ['sort' => $column, 'direction' => $sort === $column && $direction === 'asc' ? 'desc' : 'asc'])) }}">{{ $label }} @if ($sort === $column){{ $direction === 'asc' ? '↑' : '↓' }}@endif</a></th>
+                            @endforeach
                             <th scope="col">Số điện thoại</th>
-                            <th scope="col">Sĩ số</th>
-                            <th scope="col">Trạng thái</th>
+                            @foreach (['si_so' => 'Sĩ số', 'trang_thai' => 'Trạng thái'] as $column => $label)
+                                <th scope="col"><a href="{{ route('lophoc.index', array_merge(request()->query(), ['sort' => $column, 'direction' => $sort === $column && $direction === 'asc' ? 'desc' : 'asc'])) }}">{{ $label }} @if ($sort === $column){{ $direction === 'asc' ? '↑' : '↓' }}@endif</a></th>
+                            @endforeach
                             <th scope="col" class="actions-heading">Hành động</th>
                         </tr>
                     </thead>

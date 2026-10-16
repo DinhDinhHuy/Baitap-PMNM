@@ -18,6 +18,7 @@ class ListSearchTest extends TestCase
         parent::setUp();
 
         Carbon::setTestNow(now()->setTime(10, 0));
+        $this->actingAs(User::factory()->create());
     }
 
     protected function tearDown(): void
@@ -29,6 +30,7 @@ class ListSearchTest extends TestCase
 
     public function test_class_list_can_be_searched_by_class_name_code_or_teacher(): void
     {
+        $this->assertAuthenticated();
         LopHoc::create([
             'ten_lop' => 'Công nghệ phần mềm',
             'ma_lop' => 'CNTT01',
@@ -54,7 +56,7 @@ class ListSearchTest extends TestCase
 
     public function test_class_routes_are_blocked_outside_working_hours(): void
     {
-        Carbon::setTestNow(now()->setTime(17, 31));
+        Carbon::setTestNow(now()->setTime(3, 0));
 
         $this->get(route('lophoc.index'))
             ->assertForbidden()
